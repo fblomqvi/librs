@@ -32,6 +32,7 @@ extern "C" {
 #define RS_ERROR_IMPOSSIBLE_ERR_POS -2;
 #define RS_ERROR_DEG_LAMBDA_NEQ_COUNT -3;
 #define RS_ERROR_NOT_A_CODEWORD -4;
+#define RS_ERROR_TOO_MANY_ERASURES -5;
 
 struct rs_code {
     uint16_t* alpha_to;     /* log lookup table */

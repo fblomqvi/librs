@@ -142,6 +142,8 @@ int rs_decode(struct rs_control* rsc, uint16_t* data, int len,
     uint16_t b[nroots+1], t[nroots+1], omega[nroots+1];
     uint16_t root[nroots], reg[nroots+1], loc[nroots];
 
+    if (no_eras > nroots)
+	return RS_ERROR_TOO_MANY_ERASURES;
 
     /* form the syndromes; i.e., evaluate data(x) at roots of g(x) */
     for (int i = 0; i < nroots; i++)
