@@ -77,6 +77,7 @@ int main(void)
 
 	struct etab* e = &Tab[1];
 	struct rs_control* rsc;
+	int retval = -1;
 
 	rsc = rs_init(e->symsize, e->gfpoly, e->fcr, e->prim, e->nroots);
 	if (!rsc)
@@ -93,15 +94,18 @@ int main(void)
 		printf("ret_stride: %d, ret_normal %d\n", ret_stride, ret_normal);
 		if (ret_stride != ret_normal) {
 			printf("FAIL: ret_val neq!\n");
+			goto err;
 		}
 
 	}
 
 	if (!trans_is_equal(rec, t_rec, 7, 7))
 		printf("FAIL: did not decode to the same\n");
+	else
+		retval = 0;
 
-
+err:
 	rs_free(rsc);
-	return 0;
+	return retval;
 }
 
