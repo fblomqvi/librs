@@ -66,6 +66,7 @@ build:
 tests: 
 tests: $(TESTS) 
 	valgrind ./tests/alloc_tests
+	valgrind ./tests/extra_tests
 	valgrind ./tests/rs_tests short
 	./tests/rs_tests
 
