@@ -6,7 +6,7 @@
 struct etab {
 	int symsize;
 	int gfpoly;
-	int fcs;
+	int fcr;
 	int prim;
 	int nroots;
 	int ntrials;

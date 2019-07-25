@@ -78,7 +78,7 @@ int main(void)
 	struct etab* e = &Tab[1];
 	struct rs_control* rsc;
 
-	rsc = rs_init(e->symsize, e->gfpoly, e->fcs, e->prim, e->nroots);
+	rsc = rs_init(e->symsize, e->gfpoly, e->fcr, e->prim, e->nroots);
 	if (!rsc)
 		return -1;
 

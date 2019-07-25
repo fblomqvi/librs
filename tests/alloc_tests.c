@@ -27,7 +27,7 @@ int main(void)
 	for (size_t i = 0; i < ARRAY_SIZE(Tab); i++) {
 		struct etab* e = &Tab[i];
 		for (size_t j = 0; j < num; j++) {
-			rsc[i * num + j] = rs_init(e->symsize, e->gfpoly, e->fcs,
+			rsc[i * num + j] = rs_init(e->symsize, e->gfpoly, e->fcr,
 						e->prim, e->nroots);
 			if (!rsc[i * num + j]) {
 				printf("rs_init failed!\n");

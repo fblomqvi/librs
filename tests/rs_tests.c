@@ -318,7 +318,7 @@ static int run_exercise(struct etab *e, int valgrind)
 	int prev_pad = -1;
 	int retval = -ENOMEM;
 
-	rsc = rs_init(e->symsize, e->gfpoly, e->fcs, e->prim, e->nroots);
+	rsc = rs_init(e->symsize, e->gfpoly, e->fcr, e->prim, e->nroots);
 	if (!rsc)
 		return retval;
 
