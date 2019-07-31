@@ -52,7 +52,6 @@ struct rs_code {
 struct rs_control
 {
     struct rs_code* code;
-    uint16_t* wspace;
 };
 
 /* Initialize a Reed-Solomon control block

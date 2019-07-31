@@ -46,7 +46,7 @@ struct rs_control* rs_init(int symsize, int gfpoly, int fcr, int prim, int nroot
     if(nroots < 0 || nroots >= (1 << symsize))
 	return NULL; /* Can't have more roots than symbol values! */
 
-    struct rs_control* rsc = calloc(1, sizeof(*rsc));
+    struct rs_control* rsc = malloc(sizeof(*rsc));
     if (!rsc)
 	return NULL;
 
@@ -54,15 +54,9 @@ struct rs_control* rs_init(int symsize, int gfpoly, int fcr, int prim, int nroot
     if (!rsc->code)
 	goto err;
 
-    rsc->wspace = malloc(sizeof(*rsc->wspace) * (nroots + 1));
-    if (!rsc->wspace)
-	goto err;
-
     return rsc;
 
 err:
-    free(rsc->wspace);
-    rs_free_internal(rsc->code);
     free(rsc);
     return NULL;
 }
@@ -72,7 +66,6 @@ void rs_free(struct rs_control* rsc)
     if(!rsc)
 	return;
 
-    free(rsc->wspace);
     rs_free_internal(rsc->code);
     free(rsc);
 }
@@ -115,7 +108,7 @@ void rs_encode(struct rs_control* rsc, uint16_t* data, int len, int stride)
 	encode(rsc->code, data, data + dlen, dlen, stride);
     } else {
 	/* Calculate parity in buffer */
-	uint16_t* parity = rsc->wspace;
+	uint16_t parity[nroots];
 	encode(rsc->code, data, parity, dlen, stride);
 
 	/* Write the parity data to the real parity location */
@@ -377,8 +370,8 @@ int rs_is_cword(struct rs_control* rsc, uint16_t* data, int len, int stride)
     struct rs_code* rs = rsc->code;
     uint16_t* alpha_to = rs->alpha_to;
     uint16_t* index_of = rs->index_of;
-    uint16_t* s = rsc->wspace;
     int nroots = rs->nroots;
+    uint16_t s[nroots];
     int fcr = rs->fcr;
     int prim = rs->prim;
 
