@@ -246,6 +246,9 @@ err:
 
 void rs_free_internal(struct rs_code* rs)
 {
+    if (!rs)
+	return;
+
     pthread_mutex_lock(&_lock);
 
     /* Find the correct code from the list */
