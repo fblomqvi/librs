@@ -77,24 +77,14 @@ void rs_free(struct rs_control* rsc)
     free(rsc);
 }
 
-void rs_encode(struct rs_control* rsc, uint16_t* data, int len, int stride)
+static void encode(struct rs_code* rs, uint16_t* data, uint16_t* parity,
+		    int dlen, int stride)
 {
-    struct rs_code* rs = rsc->code;
     uint16_t* alpha_to = rs->alpha_to;
     uint16_t* index_of = rs->index_of;
     uint16_t* genpoly = rs->genpoly;
     int nn = rs->nn;
     int nroots = rs->nroots;
-    int dlen = len - nroots;
-    uint16_t* parity;
-
-    if (stride == 1) {
-	/* Calculate parity in-place */
-	parity = data + dlen;
-    } else {
-	/* Calculate parity in buffer */
-	parity = rsc->wspace;
-    }
 
     memset(parity, 0, nroots * sizeof(*parity));
 
@@ -113,13 +103,25 @@ void rs_encode(struct rs_control* rsc, uint16_t* data, int len, int stride)
 	else
 	    parity[nroots-1] = 0;
     }
+}
 
-    if (stride != 1) {
+void rs_encode(struct rs_control* rsc, uint16_t* data, int len, int stride)
+{
+    int nroots = rsc->code->nroots;
+    int dlen = len - nroots;
+
+    if (stride == 1) {
+	/* Calculate parity in-place */
+	encode(rsc->code, data, data + dlen, dlen, stride);
+    } else {
+	/* Calculate parity in buffer */
+	uint16_t* parity = rsc->wspace;
+	encode(rsc->code, data, parity, dlen, stride);
+
 	/* Write the parity data to the real parity location */
 	uint16_t* par = data + dlen * stride;
 	for (int i = 0; i < nroots; i++)
 	    par[i * stride] = parity[i];
-
     }
 }
 
