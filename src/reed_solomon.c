@@ -36,7 +36,7 @@
 struct rs_control* rs_init(int symsize, int gfpoly, int fcr, int prim, int nroots)
 {
     /* Check parameter ranges */
-    if(symsize < 0 || symsize > 8 * sizeof(uint16_t))
+    if(symsize < 0 || (size_t) symsize > 8 * sizeof(uint16_t))
 	return NULL;
 
     if(fcr < 0 || fcr >= (1 << symsize))
