@@ -1,5 +1,5 @@
 /*
- * internal..
+ * internal.h
  * Copyright (C) 2002 Phil Karn, KA9Q
  * Copyright (C) 2019 Ferdinand Blomqvist
  *
