@@ -33,7 +33,7 @@
  * prim = primitive element to generate polynomial roots
  * nroots = RS code generator polynomial degree (number of roots)
  */
-struct rs_control* rs_init(int symsize, int gfpoly, int fcr, int prim, int nroots)
+struct rs_code* rs_init(int symsize, int gfpoly, int fcr, int prim, int nroots)
 {
     /* Check parameter ranges */
     if(symsize < 0 || (size_t) symsize > 8 * sizeof(uint16_t))
@@ -46,28 +46,13 @@ struct rs_control* rs_init(int symsize, int gfpoly, int fcr, int prim, int nroot
     if(nroots < 0 || nroots >= (1 << symsize))
 	return NULL; /* Can't have more roots than symbol values! */
 
-    struct rs_control* rsc = malloc(sizeof(*rsc));
-    if (!rsc)
-	return NULL;
-
-    rsc->code = rs_init_internal(symsize, gfpoly, fcr, prim, nroots);
-    if (!rsc->code)
-	goto err;
-
-    return rsc;
-
-err:
-    free(rsc);
-    return NULL;
+    struct rs_code* rs = rs_init_internal(symsize, gfpoly, fcr, prim, nroots);
+    return rs;
 }
 
-void rs_free(struct rs_control* rsc)
+void rs_free(struct rs_code* rs)
 {
-    if(!rsc)
-	return;
-
-    rs_free_internal(rsc->code);
-    free(rsc);
+    rs_free_internal(rs);
 }
 
 static void encode(struct rs_code* rs, uint16_t* data, uint16_t* parity,
@@ -98,18 +83,18 @@ static void encode(struct rs_code* rs, uint16_t* data, uint16_t* parity,
     }
 }
 
-void rs_encode(struct rs_control* rsc, uint16_t* data, int len, int stride)
+void rs_encode(struct rs_code* rs, uint16_t* data, int len, int stride)
 {
-    int nroots = rsc->code->nroots;
+    int nroots = rs->nroots;
     int dlen = len - nroots;
 
     if (stride == 1) {
 	/* Calculate parity in-place */
-	encode(rsc->code, data, data + dlen, dlen, stride);
+	encode(rs, data, data + dlen, dlen, stride);
     } else {
 	/* Calculate parity in buffer */
 	uint16_t parity[nroots];
-	encode(rsc->code, data, parity, dlen, stride);
+	encode(rs, data, parity, dlen, stride);
 
 	/* Write the parity data to the real parity location */
 	uint16_t* par = data + dlen * stride;
@@ -118,10 +103,9 @@ void rs_encode(struct rs_control* rsc, uint16_t* data, int len, int stride)
     }
 }
 
-int rs_decode(struct rs_control* rsc, uint16_t* data, int len,
+int rs_decode(struct rs_code* rs, uint16_t* data, int len,
 		int stride, const int* eras, int no_eras, int* err_pos)
 {
-    struct rs_code* rs = rsc->code;
     uint16_t* alpha_to = rs->alpha_to;
     uint16_t* index_of = rs->index_of;
     int nn = rs->nn;
@@ -365,9 +349,8 @@ int rs_decode(struct rs_control* rsc, uint16_t* data, int len,
     return num_corrected;
 }
 
-int rs_is_cword(struct rs_control* rsc, uint16_t* data, int len, int stride)
+int rs_is_cword(struct rs_code* rs, uint16_t* data, int len, int stride)
 {
-    struct rs_code* rs = rsc->code;
     uint16_t* alpha_to = rs->alpha_to;
     uint16_t* index_of = rs->index_of;
     int nroots = rs->nroots;

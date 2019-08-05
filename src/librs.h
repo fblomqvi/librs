@@ -48,32 +48,26 @@ struct rs_code {
     int users;
 };
 
-/* Reed-Solomon code control block */
-struct rs_control
-{
-    struct rs_code* code;
-};
-
-/* Initialize a Reed-Solomon control block
+/* Initialize a Reed-Solomon code
  * symsize = symbol size, bits
  * gfpoly = Field generator polynomial coefficients
  * fcr = first root of RS code generator polynomial, index form
  * prim = primitive element to generate polynomial roots
  * nroots = RS code generator polynomial degree (number of roots)
  */
-struct rs_control* rs_init(int symsize, int gfpoly,
+struct rs_code* rs_init(int symsize, int gfpoly,
 			int fcr, int prim, int nroots);
 
-void rs_free(struct rs_control* rsc);
+void rs_free(struct rs_code* rs);
 
-void rs_encode(struct rs_control* rsc, uint16_t* data, int len, int stride);
-int rs_decode(struct rs_control* rsc, uint16_t* data, int len,
+void rs_encode(struct rs_code* rs, uint16_t* data, int len, int stride);
+int rs_decode(struct rs_code* rs, uint16_t* data, int len,
 		int stride, const int* eras, int no_eras, int* err_pos);
-int rs_is_cword(struct rs_control* rsc, uint16_t* data, int len, int stride);
+int rs_is_cword(struct rs_code* rs, uint16_t* data, int len, int stride);
 
 /* Convenience functions */
-static inline int rs_mind(struct rs_control* rsc)
-{ return rsc->code->nroots + 1; }
+static inline int rs_mind(struct rs_code* rs)
+{ return rs->nroots + 1; }
 
 #ifdef __cplusplus
 }

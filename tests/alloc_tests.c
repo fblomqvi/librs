@@ -22,7 +22,7 @@
 int main(void)
 {
 	size_t num = 4;
-	struct rs_control* rsc[ARRAY_SIZE(Tab) * num];
+	struct rs_code* rsc[ARRAY_SIZE(Tab) * num];
 
 	for (size_t i = 0; i < ARRAY_SIZE(Tab); i++) {
 		struct etab* e = &Tab[i];

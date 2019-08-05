@@ -109,11 +109,11 @@ static void free_ws(struct wspace *ws)
  *
  * Returns the number of corrupted symbols.
  */
-static int get_rcw_we(struct rs_control *rs, struct wspace *ws,
+static int get_rcw_we(struct rs_code *rs, struct wspace *ws,
 		int len, int errs, int eras)
 {
-	int nn = rs->code->nn;
-	int nroots = rs->code->nroots;
+	int nn = rs->nn;
+	int nroots = rs->nroots;
 	uint16_t *c = ws->c;
 	uint16_t *r = ws->r;
 	int *errlocs = ws->errlocs;
@@ -178,7 +178,7 @@ static int get_rcw_we(struct rs_control *rs, struct wspace *ws,
 }
 
 /* Test up to error correction capacity */
-static void test_uc(struct rs_control *rs, int len, int errs,
+static void test_uc(struct rs_code *rs, int len, int errs,
 		int eras, int trials, struct estat *stat,
 		struct wspace *ws)
 {
@@ -205,11 +205,11 @@ static void test_uc(struct rs_control *rs, int len, int errs,
 	stat->nwords += trials;
 }
 
-int exercise_rs(struct rs_control *rs, struct wspace *ws,
+int exercise_rs(struct rs_code *rs, struct wspace *ws,
 		int len, int trials)
 {
 	struct estat stat = {0, 0, 0, 0};
-	int nroots = rs->code->nroots;
+	int nroots = rs->nroots;
 	int retval = 0;
 
 	if (v >= V_PROGRESS)
@@ -235,14 +235,14 @@ int exercise_rs(struct rs_control *rs, struct wspace *ws,
 }
 
 /* Tests for correct behaviour beyond error correction capacity */
-static void test_bc(struct rs_control *rs, int len, int errs,
+static void test_bc(struct rs_code *rs, int len, int errs,
 		int eras, int trials, struct bcstat *stat,
 		struct wspace *ws)
 {
 	uint16_t *r = ws->r;
 	uint16_t *c = ws->c;
 	int *derrlocs = ws->derrlocs;
-	int nroots = rs->code->nroots;
+	int nroots = rs->nroots;
 	int dlen = len - nroots;
 
 	for (int j = 0; j < trials; j++) {
@@ -273,11 +273,11 @@ static void test_bc(struct rs_control *rs, int len, int errs,
 	stat->nwords += trials;
 }
 
-int exercise_rs_bc(struct rs_control *rs, struct wspace *ws,
+int exercise_rs_bc(struct rs_code *rs, struct wspace *ws,
 		int len, int trials)
 {
 	struct bcstat stat = {0, 0, 0, 0};
-	int nroots = rs->code->nroots;
+	int nroots = rs->nroots;
 	int errs, eras, cutoff;
 
 	if (v >= V_PROGRESS)
@@ -310,7 +310,7 @@ int exercise_rs_bc(struct rs_control *rs, struct wspace *ws,
 
 static int run_exercise(struct etab *e, int valgrind)
 {
-	struct rs_control *rsc;
+	struct rs_code *rs;
 	struct wspace *ws;
 	int nn = (1 << e->symsize) - 1;
 	int kk = nn - e->nroots;
@@ -318,11 +318,11 @@ static int run_exercise(struct etab *e, int valgrind)
 	int prev_pad = -1;
 	int retval = -ENOMEM;
 
-	rsc = rs_init(e->symsize, e->gfpoly, e->fcr, e->prim, e->nroots);
-	if (!rsc)
+	rs = rs_init(e->symsize, e->gfpoly, e->fcr, e->prim, e->nroots);
+	if (!rs)
 		return retval;
 
-	ws = alloc_ws(rsc->code);
+	ws = alloc_ws(rs);
 	if (!ws)
 		goto err;
 
@@ -342,14 +342,14 @@ static int run_exercise(struct etab *e, int valgrind)
 					len, kk - pad, nn + 1);
 		}
 
-		retval |= exercise_rs(rsc, ws, len, trials);
-		retval |= exercise_rs_bc(rsc, ws, len, trials);
+		retval |= exercise_rs(rs, ws, len, trials);
+		retval |= exercise_rs_bc(rs, ws, len, trials);
 	}
 
 	free_ws(ws);
 
 err:
-	rs_free(rsc);
+	rs_free(rs);
 	return retval;
 }
 

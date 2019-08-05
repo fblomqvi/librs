@@ -93,7 +93,7 @@ int main(void)
 	uint16_t t_rec[ARRAY_SIZE(arr)];
 
 	struct etab* e = &Tab[1];
-	struct rs_control* rsc;
+	struct rs_code* rsc;
 	int retval = -1;
 
 	rsc = rs_init(e->symsize, e->gfpoly, e->fcr, e->prim, e->nroots);
