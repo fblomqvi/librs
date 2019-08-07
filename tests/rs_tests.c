@@ -50,13 +50,13 @@ struct bcstat {
 };
 
 struct wspace {
-	uint16_t *c;		/* sent codeword */
-	uint16_t *r;		/* received word */
+	uint16_t *c;            /* sent codeword */
+	uint16_t *r;            /* received word */
 	int *errlocs;
 	int *derrlocs;
 };
 
-static double Pad[] = {0, 0.25, 0.5, 0.75, 1.0};
+static double Pad[] = { 0, 0.25, 0.5, 0.75, 1.0 };
 
 static struct wspace *alloc_ws(struct rs_code *rs)
 {
@@ -110,7 +110,7 @@ static void free_ws(struct wspace *ws)
  * Returns the number of corrupted symbols.
  */
 static int get_rcw_we(struct rs_code *rs, struct wspace *ws,
-		int len, int errs, int eras)
+		      int len, int errs, int eras)
 {
 	int nn = rs->nn;
 	int nroots = rs->nroots;
@@ -179,8 +179,8 @@ static int get_rcw_we(struct rs_code *rs, struct wspace *ws,
 
 /* Test up to error correction capacity */
 static void test_uc(struct rs_code *rs, int len, int errs,
-		int eras, int trials, struct estat *stat,
-		struct wspace *ws)
+		    int eras, int trials, struct estat *stat,
+		    struct wspace *ws)
 {
 	uint16_t *c = ws->c;
 	uint16_t *r = ws->r;
@@ -208,7 +208,7 @@ static void test_uc(struct rs_code *rs, int len, int errs,
 int exercise_rs(struct rs_code *rs, struct wspace *ws,
 		int len, int trials)
 {
-	struct estat stat = {0, 0, 0, 0};
+	struct estat stat = { 0, 0, 0, 0 };
 	int nroots = rs->nroots;
 	int retval = 0;
 
@@ -221,9 +221,9 @@ int exercise_rs(struct rs_code *rs, struct wspace *ws,
 
 	if (v >= V_CSUMMARY) {
 		printf("    Decodes wrong:        %d / %d\n",
-				stat.dwrong, stat.nwords);
+		       stat.dwrong, stat.nwords);
 		printf("    Wrong return value:   %d / %d\n",
-				stat.irv, stat.nwords);
+		       stat.irv, stat.nwords);
 		printf("    Wrong error position: %d\n", stat.wepos);
 	}
 
@@ -236,8 +236,8 @@ int exercise_rs(struct rs_code *rs, struct wspace *ws,
 
 /* Tests for correct behaviour beyond error correction capacity */
 static void test_bc(struct rs_code *rs, int len, int errs,
-		int eras, int trials, struct bcstat *stat,
-		struct wspace *ws)
+		    int eras, int trials, struct bcstat *stat,
+		    struct wspace *ws)
 {
 	uint16_t *r = ws->r;
 	uint16_t *c = ws->c;
@@ -274,9 +274,9 @@ static void test_bc(struct rs_code *rs, int len, int errs,
 }
 
 int exercise_rs_bc(struct rs_code *rs, struct wspace *ws,
-		int len, int trials)
+		   int len, int trials)
 {
-	struct bcstat stat = {0, 0, 0, 0};
+	struct bcstat stat = { 0, 0, 0, 0 };
 	int nroots = rs->nroots;
 	int errs, eras, cutoff;
 
@@ -295,11 +295,11 @@ int exercise_rs_bc(struct rs_code *rs, struct wspace *ws,
 
 	if (v >= V_CSUMMARY) {
 		printf("    decoder gives up:        %d / %d\n",
-				stat.rfail, stat.nwords);
+		       stat.rfail, stat.nwords);
 		printf("    decoder returns success: %d / %d\n",
-				stat.rsuccess, stat.nwords);
+		       stat.rsuccess, stat.nwords);
 		printf("      not a codeword:        %d / %d\n",
-				stat.noncw, stat.rsuccess);
+		       stat.noncw, stat.rsuccess);
 	}
 
 	if (stat.noncw && v >= V_PROGRESS)
@@ -339,7 +339,7 @@ static int run_exercise(struct etab *e, int valgrind)
 		prev_pad = pad;
 		if (v >= V_PROGRESS) {
 			printf("Testing (%d,%d)_%d code...\n",
-					len, kk - pad, nn + 1);
+			       len, kk - pad, nn + 1);
 		}
 
 		retval |= exercise_rs(rs, ws, len, trials);
@@ -353,7 +353,7 @@ err:
 	return retval;
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	int fail = 0;
 	int valgrind = 0;
@@ -361,7 +361,7 @@ int main(int argc, char** argv)
 
 	srandom(time(NULL));
 
-	if(argc > 1) {
+	if (argc > 1) {
 		if (strcmp(argv[1], "short")) {
 			printf("Invalid argument: '%s'", argv[1]);
 			return -1;

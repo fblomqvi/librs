@@ -35,17 +35,17 @@ extern "C" {
 #define RS_ERROR_TOO_MANY_ERASURES -5;
 
 struct rs_code {
-    uint16_t* alpha_to;     /* log lookup table */
-    uint16_t* index_of;     /* Antilog lookup table */
-    uint16_t* genpoly;      /* Generator polynomial */
-    int mm;		    /* Bits per symbol */
-    int nn;		    /* Symbols per block (= (1<<mm)-1) */
-    int nroots;		    /* Number of generator roots = number of parity symbols */
-    int fcr;		    /* First consecutive root, index form */
-    int prim;		    /* Primitive element, index form */
-    int iprim;		    /* prim-th root of 1, index form */
-    int gfpoly;
-    int users;
+	uint16_t *alpha_to;     /* log lookup table */
+	uint16_t *index_of;     /* Antilog lookup table */
+	uint16_t *genpoly;      /* Generator polynomial */
+	int mm;                 /* Bits per symbol */
+	int nn;                 /* Symbols per block (= (1<<mm)-1) */
+	int nroots;             /* Number of generator roots = number of parity symbols */
+	int fcr;                /* First consecutive root, index form */
+	int prim;               /* Primitive element, index form */
+	int iprim;              /* prim-th root of 1, index form */
+	int gfpoly;
+	int users;
 };
 
 /* Initialize a Reed-Solomon code
@@ -55,15 +55,15 @@ struct rs_code {
  * prim = primitive element to generate polynomial roots
  * nroots = RS code generator polynomial degree (number of roots)
  */
-struct rs_code* rs_init(int symsize, int gfpoly,
+struct rs_code *rs_init(int symsize, int gfpoly,
 			int fcr, int prim, int nroots);
 
-void rs_free(struct rs_code* rs);
+void rs_free(struct rs_code *rs);
 
-void rs_encode(struct rs_code* rs, uint16_t* data, int len, int stride);
-int rs_decode(struct rs_code* rs, uint16_t* data, int len,
-		int stride, const int* eras, int no_eras, int* err_pos);
-int rs_is_cword(struct rs_code* rs, uint16_t* data, int len, int stride);
+void rs_encode(struct rs_code *rs, uint16_t *data, int len, int stride);
+int rs_decode(struct rs_code *rs, uint16_t *data, int len,
+	      int stride, const int *eras, int no_eras, int *err_pos);
+int rs_is_cword(struct rs_code *rs, uint16_t *data, int len, int stride);
 
 /* Convenience functions */
 static inline int rs_mind(struct rs_code* rs)

@@ -68,14 +68,14 @@ static uint16_t t_err[] = {
 	0, 0, 0, 0, 0, 0, 0,
 };
 
-static void add_error(uint16_t* rec, const uint16_t* cw, const uint16_t* err)
+static void add_error(uint16_t *rec, const uint16_t *cw, const uint16_t *err)
 {
 	for (size_t i = 0; i < ARRAY_SIZE(arr); i++)
 		rec[i] = cw[i] ^ err[i];
 }
 
-static int trans_is_equal(const uint16_t* rec, const uint16_t* t_rec,
-			size_t rows, size_t cols)
+static int trans_is_equal(const uint16_t *rec, const uint16_t *t_rec,
+			  size_t rows, size_t cols)
 {
 	for(size_t r = 0; r < rows; r++) {
 		for(size_t c = 0; c < cols; c++) {
@@ -92,8 +92,8 @@ int main(void)
 	uint16_t rec[ARRAY_SIZE(arr)];
 	uint16_t t_rec[ARRAY_SIZE(arr)];
 
-	struct etab* e = &Tab[1];
-	struct rs_code* rsc;
+	struct etab *e = &Tab[1];
+	struct rs_code *rsc;
 	int retval = -1;
 
 	rsc = rs_init(e->symsize, e->gfpoly, e->fcr, e->prim, e->nroots);
@@ -113,7 +113,6 @@ int main(void)
 			printf("FAIL: ret_val neq!\n");
 			goto err;
 		}
-
 	}
 
 	if (!trans_is_equal(rec, t_rec, 7, 7))
@@ -125,4 +124,3 @@ err:
 	rs_free(rsc);
 	return retval;
 }
-

@@ -24,18 +24,18 @@
 #include <stdint.h>
 #include "librs.h"
 
-struct rs_code* rs_init_internal(int symsize, int gfpoly,
-				int fcr, int prim, int nroots);
+struct rs_code *rs_init_internal(int symsize, int gfpoly,
+				 int fcr, int prim, int nroots);
 
-void rs_free_internal(struct rs_code* rs);
+void rs_free_internal(struct rs_code *rs);
 
-static inline int rs_modnn(struct rs_code* rs, int x)
+static inline int modnn(struct rs_code *rs, int x)
 {
-    while (x >= rs->nn) {
-	x -= rs->nn;
-	x = (x >> rs->mm) + (x & rs->nn);
-    }
-    return x;
+	while (x >= rs->nn) {
+		x -= rs->nn;
+		x = (x >> rs->mm) + (x & rs->nn);
+	}
+	return x;
 }
 
 #endif /* FB_LIBRS_INTERNAL_H */
