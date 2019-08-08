@@ -1,0 +1,128 @@
+.TH librs 3
+.SH NAME
+rs_init, rs_free, rs_encode, rs_decode rs_mind
+\- Reed-Solomon encoding/decoding
+.SH SYNOPSIS
+.nf
+.ft B
+#include "librs.h"
+
+struct rs_code *rs_init(int symsize, int gfpoly,
+			int fcr, int prim, int nroots);
+
+void rs_free(struct rs_code *rs);
+
+void rs_encode(struct rs_code *rs, uint16_t *data, int len, int stride);
+
+int rs_decode(struct rs_code *rs, uint16_t *data, int len,
+	      int stride, const int *eras, int no_eras, int *err_pos);
+
+int rs_is_cword(struct rs_code *rs, uint16_t *data, int len, int stride);
+
+static inline int rs_mind(struct rs_code* rs);
+
+.fi
+
+.SH DESCRIPTION
+These functions implement Reed-Solomon error control encoding and decoding.
+To access these functions, add "-lrs" to your linker command line.
+
+To use the general purpose RS encoder or decoder, the user must first
+call \fBrs_init\fR. 
+The arguments are as follows:
+
+\fBsymsize\fR gives the symbol size in bits, from 2 to 16. 
+The resulting Reed-Solomon code word will have 2^\fBsymsize\fR - 1 symbols,
+each containing \fBsymsize\fR bits.
+The codeword may be shortened with the \fBlen\fR parameter given to
+\fBrs_encode\fR and \fBrs_decode\fR as described below.
+
+\fBgfpoly\fR gives the extended Galois field generator polynomial coefficients,
+with the 0th coefficient in the low order bit.
+The polynomial \fImust\fR be primitive; if not, the call will fail and NULL
+will be returned.
+
+\fBfcr\fR gives, in index form, the first consecutive root of the
+Reed Solomon code generator polynomial.
+
+\fBprim\fR gives, in index form, the primitive element in the Galois field
+used to generate the Reed Solomon code generator polynomial.
+
+\fBnroots\fR gives the number of roots in the Reed Solomon code
+generator polynomial. This equals the number of parity symbols
+per code block.
+
+The \fBrs_encode\fR and \fBrs_decode\fR functions accept
+the pointer returned by \fBrs_init\fR to
+encode a block of data using the specified code.
+
+The given Reed-Solomon code can be implicitly shortened with the \fBlen\fR parameter.
+The first (2^\fBsymsize\fR - 1) - \fBlen\fR symbols in the codeword
+are implicitly padded to zero in a shortened code block. 
+The resulting Reed-Solomon code has parameters (N,K,D), where
+N = \fBlen\fR, K = N-\fBnroots\fR and D = \fBnroots\fR + 1.
+\fBlen\fR must be between (inclusive) 2^\fBsymsize\fR - 1 and \fBnroots\fR + 1.
+
+
+The input data array is expected to have length N, and the first
+K symbols should contain the message data.
+
+The \fBstride\fR parameter enables encoding and decoding of non-continuous
+data without needing to copy the data back and forth to a
+temporary continuous buffer.
+This is useful with, for instance, interleaved Reed-Solomon codes or product
+codes based on Reed-Solomon codes
+
+The \fBrs_decode\fR function correct the errors in a Reed-Solomon codeword of N
+symbols up to the capability of the code.
+An optional list of "erased" symbol indices may be given in the \fBeras\fR
+array to assist the decoder; this parameter may be NULL if no erasures
+are given.
+The number of erased symbols must be given in the \fBno_eras\fR
+parameter.
+The symbol indices given in \fBeras\fR must reflect the position in
+the codeword, and does not depend on the \fBstride\fR.
+
+To maximize performance, the encode and decode functions perform no
+"sanity checking" of their inputs.
+Decoder failure may result if \fBeras\fR contains duplicate entries or if
+\fBlen\fR is not in the allowed range.
+
+The decoder corrects the symbols "in place", returning the number of symbols
+corrected.
+Erasures without symbol corruption are not included when counting
+the number of symbols corrected. If the codeword is uncorrectable, then a
+negative number is returned and the data block is unchanged.
+If \fBeras_pos\fR is non-null, it is used to return a list of corrected symbol
+positions, in no particular order.
+This means that the array passed through
+this parameter \fImust\fR have at least \fBnroots\fR elements to prevent a
+possible buffer overflow.
+Similarly to \fBeras\fR, the symbol indices given in \fBeras_pos\fR reflect the
+position in the codeword, and does not depend on the \fBstride\fR.
+
+The \fBrs_free\fR function frees internal space allocated by \fBrs_init\fR.
+
+All functions in \fBlibrs\fR are thread-safe.
+
+.SH RETURN VALUES
+\fBrs_init\fR returns NULL on error.
+
+\fBrs_decode\fR return a count of corrected
+symbols, or a negative number if the block was uncorrectible.
+Note that "erased" symbols do not count as corrected symbols
+unless the symbol at the erased position was corrupted.
+
+\fBrs_mind\fR is a convenience function that returns the minimum distance D of
+the given code.
+
+.SH AUTHOR
+Ferdinand Blomqvist, based heavily the Reed_solomon manual page from Phil
+Karn's libfec.
+
+.SH COPYRIGHT
+Copyright 2019 Ferdinand Blomqvist.
+
+Copyright 2004, Phil Karn, KA9Q. 
+
+May be used under the terms of the GNU General Public License v2.

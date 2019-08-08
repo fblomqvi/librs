@@ -6,6 +6,7 @@ lib_LTLIBRARIES = librs.la
 include_HEADERS = src/librs.h
 librs_la_SOURCES = src/internal.c src/internal.h src/list.h src/list.c src/reed_solomon.c
 
+dist_man_MANS = librs.3
 
 TESTS = tests/alloc_tests tests/extra_tests tests/rs_tests
 check_PROGRAMS = $(TESTS)
