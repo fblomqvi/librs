@@ -1,4 +1,4 @@
-librs is a small library for forward error correction with Reed-Solomon codes.
+__librs__ is a small library for forward error correction with Reed-Solomon codes.
 It is based on the Reed-Solomon code in Phil Karn's libfec, but with bugfixes,
 optimizations and a slightly different interface. The encoder and decoder are
 general purpose and not optimized for any particular code. The main use case is
@@ -6,7 +6,7 @@ for simulations with Reed-Solomon codes.
 
 If you need a Reed-Solomon library for production use that is optimized for one
 specific code, then the various C++ template libraries might be faster and/or
-better for that particular application.
+better suited for that particular application.
 
 INSTALLATION
 ------------
@@ -57,4 +57,5 @@ See the man page for more information.
 NOTES
 -----
 The Reed-Solomon encoding used by the library is the BCH view, and the encoding
-is systematic. See, for instance, [Wikipedia](https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction#The_BCH_view:_The_codeword_as_a_sequence_of_coefficients).
+is systematic.
+For more information, see, for instance, [Wikipedia](https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction#The_BCH_view:_The_codeword_as_a_sequence_of_coefficients).
