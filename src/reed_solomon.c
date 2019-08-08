@@ -151,11 +151,11 @@ int rs_decode(struct rs_code *rs, uint16_t *data, int len,
 	int iprim = rs->iprim;
 	int pad = nn - len;
 
-	uint16_t lambda[nroots + 1], s[nroots]; /* Err+Eras Locator poly
-	                                         * and syndrome poly */
-	uint16_t si[nroots];                    /* Syndrome in index form */
-	uint16_t b[nroots + 1], t[nroots + 1], omega[nroots + 1];
-	uint16_t root[nroots], reg[nroots + 1], loc[nroots];
+	uint16_t s[nroots], si[nroots];
+	uint16_t root[nroots], loc[nroots];
+	uint16_t lambda[nroots + 1];	/* Error and erasure locator poly */
+	uint16_t omega[nroots + 1];	/* Error and erasure evaluator poly */
+	uint16_t b[nroots + 1], t[nroots + 1];	/* workspace */
 
 	if (no_eras > nroots)
 		return RS_ERROR_TOO_MANY_ERASURES;
@@ -264,14 +264,14 @@ int rs_decode(struct rs_code *rs, uint16_t *data, int len,
 	}
 
 	/* Find roots of the error+erasure locator polynomial by Chien search */
-	memcpy(&reg[1], &lambda[1], nroots * sizeof(reg[0]));
+	memcpy(&b[1], &lambda[1], nroots * sizeof(b[0]));
 	int count = 0;          /* Number of roots of lambda(x) */
 	for (int i = 1, k = iprim - 1; i <= nn; i++, k = modnn(rs, k + iprim)) {
 		uint16_t q = 1; /* lambda[0] is always 0 */
 		for (int j = deg_lambda; j > 0; j--) {
-			if (reg[j] != nn) {
-				reg[j] = modnn(rs, reg[j] + j);
-				q ^= alpha_to[reg[j]];
+			if (b[j] != nn) {
+				b[j] = modnn(rs, b[j] + j);
+				q ^= alpha_to[b[j]];
 			}
 		}
 		if (q != 0)
