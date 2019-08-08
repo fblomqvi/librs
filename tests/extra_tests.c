@@ -2,6 +2,8 @@
  * extra_tests.c
  * Copyright (C) 2019 Ferdinand Blomqvist
  *
+ * This file is part of librs.
+ *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
@@ -18,15 +20,6 @@
 #include "test_codes.h"
 #include "librs.h"
 #include <stdio.h>
-/*
-ret for columns: 0 1 0 0 1 0 0
-strat 0: viable: 1; { 1 4 }
-strat 1: viable: 1; { }
-processing strat 1
-ret for rows: 1 1 1 1 0 1 0
-w: 3
-c:
-*/
 
 static uint16_t arr[] = {
 	7, 5, 6, 4, 7, 6, 3,

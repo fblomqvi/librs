@@ -3,6 +3,8 @@
  * Copyright (C) 2002 Phil Karn, KA9Q
  * Copyright (C) 2019 Ferdinand Blomqvist
  *
+ * This file is part of librs.
+ *
  * The Reed-Solomon code is copied from Phil Karn's fec library. Refactoring,
  * bugfixes, additional code and adaption to new interface by Ferdinand
  * Blomqvist

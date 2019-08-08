@@ -2,6 +2,8 @@
  * rs_tests.c
  * Copyright (C) 2019 Ferdinand Blomqvist
  *
+ * This file is part of librs.
+ *
  * Based on previous work by Phil Karn, KA9Q.
  *
  * This program is free software: you can redistribute it and/or modify it

@@ -3,6 +3,8 @@
  * Copyright (C) 2002 Phil Karn, KA9Q
  * Copyright (C) 2019 Ferdinand Blomqvist
  *
+ * This file is part of librs.
+ *
  * The Reed-Solomon code is copied from Phil Karn's fec library. Bugfixes,
  * additional code and adaption to new interface by Ferdinand Blomqvist
  *
@@ -18,6 +20,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "internal.h"
 #include "list.h"
 #include <pthread.h>
