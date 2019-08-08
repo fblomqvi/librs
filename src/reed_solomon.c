@@ -315,25 +315,24 @@ int rs_decode(struct rs_code *rs, uint16_t *data, int len,
 	}
 
 	/* We reuse the buffer for b with a more appropriate name */
-	uint16_t *cor = b;
+	uint16_t *const cor = b;
 	int num_corrected = 0;
 
 	/*
 	 * Compute error values in poly-form. num1 = omega(inv(X(l))), num2 =
 	 * inv(X(l))**(fcr-1) and den = lambda_pr(inv(X(l))) all in poly-form
 	 */
-	for (int j = count - 1; j >= 0; j--) {
+	for (int j = 0; j < count; j++) {
 		uint16_t num1 = 0;
 		for (int i = deg_omega; i >= 0; i--) {
 			if (omega[i] != nn)
 				num1 ^= alpha_to[modnn(rs, omega[i] + i * root[j])];
 		}
 
-		if (num1 == 0) {
-			cor[j] = 0;
+		if (num1 == 0)
 			continue;
-		}
 
+		num1 = index_of[num1];
 		uint16_t num2 = modnn(rs, root[j] * (fcr - 1) + nn);
 		uint16_t den = 0;
 
@@ -343,20 +342,18 @@ int rs_decode(struct rs_code *rs, uint16_t *data, int len,
 				den ^= alpha_to[modnn(rs, lambda[i + 1] + i * root[j])];
 		}
 
-		cor[j] = alpha_to[modnn(rs, index_of[num1]
-					   + num2 + nn - index_of[den])];
-		num_corrected++;
+		den = index_of[den];
+		cor[num_corrected] = modnn(rs, num1 + num2 + nn - den);
+		loc[num_corrected++] = loc[j];
 	}
 
-	/* We compute the syndrome of the 'error' to and check that it matches the
+	/* We compute the syndrome of the 'error' and check that it matches the
 	 * syndrome of the received word */
 	for (int i = 0; i < nroots; i++) {
 		uint16_t tmp = 0;
-		for (int j = 0; j < count; j++) {
-			if (cor[j]) {
-				int k = (fcr + i) * prim * (nn - loc[j] - 1);
-				tmp ^= alpha_to[modnn(rs, index_of[cor[j]] + k)];
-			}
+		for (int j = 0; j < num_corrected; j++) {
+			int k = (fcr + i) * prim * (nn - loc[j] - 1);
+			tmp ^= alpha_to[modnn(rs, cor[j] + k)];
 		}
 
 		if (tmp != s[i])
@@ -364,17 +361,13 @@ int rs_decode(struct rs_code *rs, uint16_t *data, int len,
 	}
 
 	/* Apply error to data */
-	for (int i = 0; i < count; i++) {
-		if (cor[i])
-			data[(loc[i] - pad) * stride] ^= cor[i];
-	}
+	for (int i = 0; i < num_corrected; i++)
+		data[(loc[i] - pad) * stride] ^= alpha_to[cor[i]];
 
 	/* Return the error positions if the caller wants them */
 	if (err_pos != NULL) {
-		int j = 0;
-		for (int i = 0; i < count; i++)
-			if (cor[i])
-				err_pos[j++] = loc[i] - pad;
+		for (int i = 0; i < num_corrected; i++)
+			err_pos[i] = loc[i] - pad;
 	}
 
 	return num_corrected;
