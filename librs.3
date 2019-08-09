@@ -93,12 +93,12 @@ corrected.
 Erasures without symbol corruption are not included when counting
 the number of symbols corrected. If the codeword is uncorrectable, then a
 negative number is returned and the data block is unchanged.
-If \fBeras_pos\fR is non-null, it is used to return a list of corrected symbol
+If \fBerr_pos\fR is non-null, it is used to return a list of corrected symbol
 positions, in no particular order.
 This means that the array passed through
 this parameter \fImust\fR have at least \fBnroots\fR elements to prevent a
 possible buffer overflow.
-Similarly to \fBeras\fR, the symbol indices given in \fBeras_pos\fR reflect the
+Similarly to \fBeras\fR, the symbol indices given in \fBerr_pos\fR reflect the
 position in the codeword, and does not depend on the \fBstride\fR.
 
 The \fBrs_free\fR function frees internal space allocated by \fBrs_init\fR.
