@@ -384,5 +384,5 @@ int main(int argc, char **argv)
 	}
 
 	printf("tests %s\n", fail ? "failed" : "passed");
-	return 0;
+	return fail;
 }
