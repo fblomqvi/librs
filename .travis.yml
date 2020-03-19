@@ -1,2 +1,6 @@
 language: c
 script: autoreconf -i --force && ./configure && make && make check
+
+compiler:
+  - gcc
+  - clang
