@@ -120,7 +120,7 @@ static inline void update_si(struct rs_code *rs, uint16_t *s, uint16_t data, int
 	if (s[i] == 0) {
 		s[i] = data;
 	} else {
-		uint16_t tmp = index_of[s[i]] + (fcr + i) * prim;
+		int tmp = index_of[s[i]] + (fcr + i) * prim;
 		s[i] = data ^ alpha_to[modnn(rs, tmp)];
 	}
 }
