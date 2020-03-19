@@ -1,6 +1,11 @@
 language: c
-script: autoreconf -i --force && ./configure && make && make check
+
+os: linux
+
+dist: bionic
 
 compiler:
   - gcc
   - clang
+
+script: autoreconf -i --force && ./configure && make && make check
