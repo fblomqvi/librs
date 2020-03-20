@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/fblomqvi/librs.svg?branch=master)](https://travis-ci.com/fblomqvi/librs)
+
 __librs__ is a small library for forward error correction with Reed-Solomon codes.
 It is based on the Reed-Solomon code in Phil Karn's libfec, but with bugfixes,
 optimizations and a slightly different interface. The encoder and decoder are
