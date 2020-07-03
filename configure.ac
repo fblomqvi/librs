@@ -2,7 +2,7 @@
 # The first parameter is project name
 # second is version number
 # third is bug report address
-AC_INIT([librs], [0.1], [https://github.com/fblomqvi/librs])
+AC_INIT([librs], [0.2], [https://github.com/fblomqvi/librs])
 
 # Force autoconf to be at least this version number:
 AC_PREREQ([2.69])
